@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <title>UI LEARNING</title>
+</head>
+<style>
+    *{
+        padding: 0px;
+        margin: 0px;
+        box-sizing: border-box;
+    }
+    #outputmultiplicationtable{
+        margin-top: 20px;
+        white-space: pre-wrap;
+    }
+    .htmloutput{
+        background-color:rgb(233 236 239);
+        opacity: 1;
+        /* height: 400px; */
+    }
+    #result{
+        text-align: center;
+        margin: 10px 100px;
+        /* margin-left: 100px; */
+    }
+</style>
+<body class="">
+    <div class="container bg-body-secondary px-5 py-5 mb-5 text-center">
+        <h1 class="fw-bolder">UI LEARNING</h1>
+        <select id="taskSelect" class="text-uppercase">
+            <option value="" disabled selected >Select Anyone of these options</option>
+            <option value="marksheet">Generate Marks Sheet</option>
+            <option value="multiplication">Generate Multiplication Tables</option>
+            <option value="arithmeticOperations">Generate Arithmetic Operations</option>
+            <option value="conversion">Generate Celsius to Fahrenheit</option>
+            <option value="factorial">Generate Factorial</option>
+            <option value="currency">Currency Converter</option>
+        </select>
+        <button onclick="generateTask()" class="btn btn-primary">Generate</button>
+    </div>
+    <div id="arithmeticSection" class="container bg-light p-3" style="display: none;">
+        <h1>Arithmetic Operations</h1>
+        <select id="operations">
+            <option>Select Anyone of these options</option>
+            <option value="additions">Additions</option>
+            <option value="subtration">Subtration</option>
+            <option value="multiplication">Multiplication</option>
+            <option value="division">Division</option>
+            <option value="modulus">Modulus</option>
+        </select>
+        <button onclick="Arithmeticoperations()" class="btn btn-primary">Generate</button>
+    </div>
+    
+    <!-- Placeholder for dynamic content -->
+    <div id="output"></div>
+</body>
+<script>
+    // Generate TASK  
+    function generateTask() {
+        const usrSel = document.getElementById('taskSelect').value; //Get user Selection 
+        const outputDiv = document.getElementById('output'); //Show HTML output which user select from dropdown
+        const arithmeticSection = document.getElementById('arithmeticSection'); // Arithmetic Section
+
+        // Clear previous content
+        outputDiv.innerHTML = '';
+        arithmeticSection.style.display = 'none'; // Hide arithmetic section initially
+
+        if (usrSel === "marksheet") {
+            // Generate Marks Sheet HTML
+            outputDiv.innerHTML = `
+            <div class="htmloutput container d-flex flex-row">
+                <div class="col p-5">
+                    <div class="row"><label>Physics: </label><input id="physics" type="number" placeholder="Enter Physics Marks" /></div>
+                    <div class="row"><label>Maths: </label><input id="maths" type="number" placeholder="Enter Maths Marks" /></div>
+                    <div class="row"><label>Computer: </label><input id="computer" type="number" placeholder="Enter Computer Marks" /></div>
+                </div>
+                <div class="col p-5">
+                    <div class="row"><label>English: </label><input id="english" type="number" placeholder="Enter English Marks" /></div>
+                    <div class="row"><label>Urdu: </label><input id="urdu" type="number" placeholder="Enter Urdu Marks" /></div>
+                    <div class="row"><label>Islamiat: </label><input id="islamiat" type="number" placeholder="Enter Islamiat Marks" /></div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-3"><button onclick="calculateGrade()" class="btn btn-primary">Calculate Total</button></div>
+            <div id="result"></div>
+            `;
+        }
+        else if( usrSel == "multiplication"){
+            // Generate Multiplication tables HTML
+             outputDiv.innerHTML = `
+             <div class="htmloutput container p-3">
+                <h1>Multiplication Tables Generator</h1>
+                <label for="number">Enter a number:</label>
+                <input type="number" id="number" placeholder="Enter the number"><br>
+                <label for="end">Enter the end limit:</label>
+                <input type="number" id="endnum" placeholder="Enter the end limit"><br>
+                <button class="btn btn-primary" onclick="generateTimesTable()">Generate Times Table</button>
+                <div class="px-5" id="outputmultiplicationtable"></div>
+            </div>`
+        }
+        else if(usrSel == 'conversion'){
+            // Generate Celsius to Fahrenheit HTML
+            outputDiv.innerHTML = `
+            <div class="htmloutput container p-3">
+                <h1>Celsius to Fahrenheit</h1>
+                <input type="number" placeholder="Enter number Celsius °C" id="celsius">
+                <button class="btn btn-primary" onclick="celsiusToFahrenheit()">Convert</button>
+                <h1 id="tempresutl"></h1>
+            </div>`
+        }
+        else if(usrSel == 'arithmeticOperations'){
+            arithmeticSection.style.display = 'block';
+        }
+        else if(usrSel == 'factorial'){
+            // Generate factorial HTML
+            outputDiv.innerHTML = `
+            <div class="htmloutput container p-3">
+                <h1>Find factorial</h1>
+                <input type="number" placeholder="Enter number" id="factorial">
+                <button class="btn btn-primary" onclick="GenerateFactorial()">Show Factorial</button>
+                <h1 id="factorialresult"></h1>
+            </div>`
+        }
+        else if(usrSel == 'currency'){
+            // Generate factorial HTML
+            outputDiv.innerHTML = `
+            <div class="htmloutput container p-3">
+                <h1>Currency Converter</h1>
+                <input type="number" placeholder="Enter a amount in PKR" id="currency">
+                <select id="currency-select">
+                    <option value="" disabled selected>Select one of these options</option>
+                    <option value="US Dollar">US Dollar</option>
+                    <option value="UK Pound">UK Pound</option>
+                    <option value="SaudiRiyal">Saudi Riyal</option>
+                </select>
+                <button class="btn btn-primary" onclick="ConvertCurrency()">Convert</button>
+                <h1 id="currencyresult"></h1>
+            </div>`
+        }
+
+        else {
+            outputDiv.innerHTML = `<p>Please select a valid task.</p>`;
+        }
+    }// MARKS SHEET TASK Functionality
+    function calculateGrade() {
+        const physics = parseFloat(document.getElementById('physics').value) || 0;
+        const maths = parseFloat(document.getElementById('maths').value) || 0;
+        const computer = parseFloat(document.getElementById('computer').value) || 0;
+        const english = parseFloat(document.getElementById('english').value) || 0;
+        const urdu = parseFloat(document.getElementById('urdu').value) || 0;
+        const islamiat = parseFloat(document.getElementById('islamiat').value) || 0;
+
+        const obtainedmarks = physics + maths + computer + english + urdu + islamiat;
+        let totalMarks =600
+        let percentage = (obtainedmarks / totalMarks) * 100
+        let grade;
+        const markssheetresult = document.getElementById('result')
+        if(percentage >= 90){
+            grade = "A+"
+            markssheetresult.style.color = 'white'
+            markssheetresult.style.backgroundColor = 'green'
+        }else if (percentage >= 80) {
+            grade = "A";
+            markssheetresult.style.color = 'white'
+            markssheetresult.style.backgroundColor = 'blue'
+        } else if (percentage >= 70) {
+            grade = "B";
+            markssheetresult.style.color = 'white'
+            markssheetresult.style.backgroundColor = '#17a2b8' //green with blue
+        } else if (percentage >= 60) {
+            grade = "C";
+            markssheetresult.style.color = 'white'
+            markssheetresult.style.backgroundColor = '#ffc107' //yellow
+        } else if (percentage >= 50) {
+            grade = "D";
+            markssheetresult.style.color = 'white'
+            markssheetresult.style.backgroundColor = '#fd7e14' //orange
+        } else {
+            grade = "F";
+            markssheetresult.style.color = 'white'
+            markssheetresult.style.backgroundColor = '#dc3545' //red
+        }
+        markssheetresult.innerHTML = `<h2>Total Marks: ${totalMarks}</h2>\n <h2>Obtaine Marks: ${obtainedmarks.toFixed(2)}</h2>\n <h2>Percentage: ${percentage.toFixed(2)}</h2> <h2> Grade: ${grade}</h2> `;
+
+    }
+    // Multiplication tables Functionality
+    function generateTimesTable(){
+        const startnumber = parseInt(document.getElementById('number').value)
+        const endnumber = parseInt(document.getElementById('endnum').value)
+        
+        if (isNaN(startnumber) || isNaN(endnumber)) {
+                alert('Please enter valid numbers.');
+                return;
+            }
+        if(startnumber <= 1 || endnumber <= 1){
+            alert('Please enter valid numbers.')
+        }
+        let output = '';
+        for (let i = 1; i <= endnumber; i++) {
+            output += `${startnumber} x ${i} = ${startnumber * i}\n`;
+        }
+        document.getElementById('outputmultiplicationtable').innerHTML = output;
+    }
+    // Convert Celsius to Fahrenheit
+    function celsiusToFahrenheit() {
+      let celsius = document.querySelector('#celsius').value
+      Fahrenheit = (celsius * 9 / 5) + 32
+      let tempresutl = document.querySelector('#tempresutl').innerText =`Given value is:${celsius}°C\n answer is ${Fahrenheit}°F`
+    }
+    // Find Factorial
+    function GenerateFactorial() {
+        let factorialnum = Number(document.querySelector('#factorial').value)
+        let factorialnumans = 1;
+        for (let i = 1; i <= factorialnum; i++) {
+            factorialnumans *= i;
+        }
+        let factorialresult =document.querySelector('#factorialresult').innerText = `The factorial of ${factorialnum} is ${factorialnumans}.`;
+    }
+    // Currency Converter
+    function ConvertCurrency(){
+        let usr_input = Number(document.getElementById('currency').value)
+        let usr_sel_currency = document.getElementById('currency-select').value
+
+        if(usr_sel_currency === 'US Dollar'){
+            convert_amount = usr_input / 300
+        }
+        if(usr_sel_currency === 'UK Pound'){
+            convert_amount = usr_input / 348.57
+        }
+        if(usr_sel_currency === 'SaudiRiyal'){
+            convert_amount = usr_input / 74.17
+        }
+        document.getElementById('currencyresult').innerText =`${usr_input} PKR is approximately\n ${convert_amount.toFixed(2)} ${usr_sel_currency}.`
+    }
+    // Arithmeticoperations
+    function Arithmeticoperations(){
+        usr_sel_airthmatic = document.getElementById("operations").value
+        const outputDiv = document.getElementById('output');
+    
+        if(usr_sel_airthmatic == 'additions'){
+            outputDiv.innerHTML =`
+            <div class="container bg-light p-3">
+                <label>Enter First Number: </label><input id="f_num" type="number" placeholder="Enter a Number"/>
+                <label>Enter Second Number: </label><input id="sec_num" type="number" placeholder="Enter a Number"/>
+                <button class="btn btn-primary" onclick="additionresult()">ADD</button>
+                <div id ="airthmatichtmlresult"></div>
+            </div>`
+        }
+        else if(usr_sel_airthmatic == 'subtration'){
+            outputDiv.innerHTML =`
+            <div class="container bg-light p-3">
+                <label>Enter First Number: </label><input id="f_num" type="number" placeholder="Enter a Number"/>
+                <label>Enter Second Number: </label><input id="sec_num" type="number" placeholder="Enter a Number"/>
+                <button class="btn btn-primary" onclick="substratresult()">Subtration</button>
+                <div id ="airthmatichtmlresult"></div>
+            </div>`
+        }
+        else if(usr_sel_airthmatic == 'multiplication'){
+            outputDiv.innerHTML= `
+            <div class="container bg-light p-3">
+                <label>Enter First Number: </label><input id="f_num" type="number" placeholder="Enter a Number"/>
+                <label>Enter Second Number: </label><input id="sec_num" type="number" placeholder="Enter a Number"/>
+                <button class="btn btn-primary" onclick="multiplicationresult()">Multiplication</button>
+                <div id ="airthmatichtmlresult"></div>
+            </div>`
+        }
+        else if(usr_sel_airthmatic == 'division'){
+            outputDiv.innerHTML= `
+            <div class="container bg-light p-3">
+                <label>Enter First Number: </label><input id="f_num" type="number" placeholder="Enter a Number"/>
+                <label>Enter Second Number: </label><input id="sec_num" type="number" placeholder="Enter a Number"/>
+                <button class="btn btn-primary" onclick="divisionresult()">Division</button>
+                <div id ="airthmatichtmlresult"></div>
+            </div>`
+        }
+        else if(usr_sel_airthmatic == 'modulus'){
+            outputDiv.innerHTML= `
+            <div class="container bg-light p-3">
+                <label>Enter First Number: </label><input id="f_num" type="number" placeholder="Enter a Number"/>
+                <label>Enter Second Number: </label><input id="sec_num" type="number" placeholder="Enter a Number"/>
+                <button class="btn btn-primary" onclick="modulusresult()">Modulus</button>
+                <div id ="airthmatichtmlresult"></div>
+            </div>`
+        }
+    }
+    function additionresult(){
+
+        let usr_add_f_n = Number(document.getElementById('f_num').value)
+        let usr_add_s_n = Number(document.getElementById('sec_num').value)
+        let addresult = usr_add_f_n + usr_add_s_n   
+
+        let airthmatichtmlresult = document.getElementById('airthmatichtmlresult')
+        airthmatichtmlresult.innerHTML = `Result ${addresult}`
+    }
+    function substratresult(){
+
+        let usr_subs_f_n = Number(document.getElementById('f_num').value)
+        let usr_subs_s_n = Number(document.getElementById('sec_num').value)
+        let substratresult = (usr_subs_f_n) -(usr_subs_s_n)   
+
+        let airthmatichtmlresult = document.getElementById('airthmatichtmlresult')
+        airthmatichtmlresult.innerHTML =`Result ${substratresult}`
+
+    }
+    function multiplicationresult(){
+
+        let usr_mul_f_n = Number(document.getElementById('f_num').value)
+        let usr_mul_s_n = Number(document.getElementById('sec_num').value)
+        let multiratresult = (usr_mul_f_n) * (usr_mul_s_n)   
+
+        let airthmatichtmlresult = document.getElementById('airthmatichtmlresult')
+        airthmatichtmlresult.innerHTML = `Result ${multiratresult}`
+
+    }
+    function divisionresult(){
+
+        let usr_div_f_n = Number(document.getElementById('f_num').value)
+        let usr_div_s_n = Number(document.getElementById('sec_num').value)
+        let divratresult = (usr_div_f_n) / (usr_div_s_n)   
+
+        let airthmatichtmlresult = document.getElementById('airthmatichtmlresult')
+        airthmatichtmlresult.innerHTML = `Result ${divratresult}`
+
+    }
+    function modulusresult(){
+
+        let usr_mod_f_n = Number(document.getElementById('f_num').value)
+        let usr_mod_s_n = Number(document.getElementById('sec_num').value)
+        if(isNaN(usr_mod_f_n) || isNaN(usr_mod_s_n)){
+            alert('Please enter valid numbers in both fields.');
+            return;
+        }
+        if(usr_mod_s_n === 0){
+            alert('Division by zero is not allowed. Please enter a non-zero second number.');
+            return;
+        }
+        
+        let modresult = (usr_mod_f_n) % (usr_mod_s_n)   
+
+        let airthmatichtmlresult = document.getElementById('airthmatichtmlresult')
+        airthmatichtmlresult.innerHTML = `Result ${modresult}`
+
+    }
+</script>
+</html>
